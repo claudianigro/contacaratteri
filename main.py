@@ -13,61 +13,19 @@
 """
 
 
-#============================================
-# CONFIGURAZIONI E COSTANTI
-#============================================
-REGEX_TUTTI_CARATTERI = r'.'           # Tutti i caratteri (usare con re.DOTALL)
-REGEX_SENZA_SPAZI = r'\S'              # Caratteri esclusi gli spazi
-REGEX_SOLO_LETTERE = r'[a-zA-ZÀ-ÿ]'   # Solo lettere, incluse accentate
-REGEX_PAROLE = r'\w+'                  # Parole (lettere, numeri, underscore)
-REGEX_PAROLE_LETTERE = r'[a-zA-ZÀ-ÿ]+' # Parole composte solo da lettere
-REGEX_FRASI = r'[^.!?]+[.!?]+'         # Frasi terminate da . ! ?
 
-# ================================================
-# Repository
-#===============================================
-
-from typing import TextIO
-
-def get_file_content(file_path: str) -> str:
-    if not file_path:
-        raise ValueError("Il file path non può essere vuoto")
-    
-    try:
-        with open(file_path, 'r') as f:
-            return f.read()
-    except FileNotFoundError:
-        raise FileNotFoundError("Il file non è stato trovato")
-
-"Si controllano due eccezioni: file vuoto e file non trovato, entrambe figlie delle eccezioni Exception"
-
-#======================
-# Services 
-#===============================================
-
-def get_caratteri_len(text: str) -> int:
-    if not text:
-        return 0
-    return len(text)
-
-
-import re
-def get_text_len_no_space(text: str) -> int:
-    if not text:
-        return 0
-    print(len(re.sub(REGEX_SENZA_SPAZI, "",  text)))
-
-def get_words_number(text: str) -> int:
-    if not text:
-        return 0
-    return len(re.findall(REGEX_PAROLE_LETTERE, text))
-
+from ui.console import print_risultato
+from data.services import (get_caratteri_len, get_text_len_no_space,get_words_number, get_phrase_number)
+from data.repository import get_file_content
 
 def main() -> None:
     try:
         content : str = get_file_content("text.txt") 
-        print(get_caratteri_len(content))
-        print(get_text_len_no_space(content))
+        print_risultato(get_caratteri_len(content), "caratteri")
+        print_risultato(get_text_len_no_space(content), "caratteri senza spazi")
+        print_risultato(get_words_number(content), "parole")
+        print_risultato(get_phrase_number(content), "frasi")    
+   
 
     except ValueError as e:
         print(f"{e}")
@@ -78,11 +36,9 @@ def main() -> None:
     except Exception as e:
         print(f"{e}")
 #Si controllano prima le eccezioni più specifiche e poi quelle più generiche
-    finally:
-        print("fine try catch")
+
     
 
-main()
-
-
+if __name__ == "__main__":
+    main()
 
