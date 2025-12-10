@@ -12,6 +12,17 @@
 
 """
 
+
+#============================================
+# CONFIGURAZIONI E COSTANTI
+#============================================
+REGEX_TUTTI_CARATTERI = r'.'           # Tutti i caratteri (usare con re.DOTALL)
+REGEX_SENZA_SPAZI = r'\S'              # Caratteri esclusi gli spazi
+REGEX_SOLO_LETTERE = r'[a-zA-ZÀ-ÿ]'   # Solo lettere, incluse accentate
+REGEX_PAROLE = r'\w+'                  # Parole (lettere, numeri, underscore)
+REGEX_PAROLE_LETTERE = r'[a-zA-ZÀ-ÿ]+' # Parole composte solo da lettere
+REGEX_FRASI = r'[^.!?]+[.!?]+'         # Frasi terminate da . ! ?
+
 # ================================================
 # Repository
 #===============================================
@@ -34,21 +45,29 @@ def get_file_content(file_path: str) -> str:
 # Services 
 #===============================================
 
-def stampa_testo_input(text: TextIO) -> None:
-    with text as f:
-        content = f.read()
-        print(content)
+def get_caratteri_len(text: str) -> int:
+    if not text:
+        return 0
+    return len(text)
 
 
 import re
 def get_text_len_no_space(text: str) -> int:
-    print(len(re.sub(r"\s+", "",  text)))
+    if not text:
+        return 0
+    print(len(re.sub(REGEX_SENZA_SPAZI, "",  text)))
+
+def get_words_number(text: str) -> int:
+    if not text:
+        return 0
+    return len(re.findall(REGEX_PAROLE_LETTERE, text))
 
 
 def main() -> None:
     try:
         content : str = get_file_content("text.txt") 
-        print(content)
+        print(get_caratteri_len(content))
+        print(get_text_len_no_space(content))
 
     except ValueError as e:
         print(f"{e}")
